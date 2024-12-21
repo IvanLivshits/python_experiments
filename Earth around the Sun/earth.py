@@ -77,17 +77,6 @@ def euler_method(r, v, acceleration, dt):
         r[i] = r[i - 1] + v[i - 1] * dt
         v[i] = v[i - 1] + acceleration(r[i - 1]) * dt
 
-# # Apply the Euler Integration on the given initial conditions
-# euler_method(r, v, acceleration, dt)
-
-# # Find the point at which the Earth is at its Apogee
-# sizes = np.array([np.linalg.norm(position) for position in r])
-# pos_at_apogee = np.max(sizes)
-# arg_max_size = np.argmax(sizes)
-# vel_at_apogee = np.linalg.norm(v[arg_max_size])
-
-# print(f"Apogee Position: {pos_at_apogee/1e9} million km, Apogee Velocity: {vel_at_apogee/1e3} km/s")
-
 # RK4 Integration
 def rk4_method(r, v, acceleration, dt):
     '''
@@ -149,8 +138,29 @@ def rk4_method(r, v, acceleration, dt):
         r[i] = r[i - 1] + dt / 6 * (k1r + 2 * k2r + 2 * k3r + k4r)
         v[i] = v[i - 1] + dt / 6 * (k1v + 2 * k2v + 2 * k3v + k4v)
 
-# Apply the RK4 Integration on the given initial conditions
-rk4_method(r, v, acceleration, dt)
+def numerical_integration(r, v, acceleration, dt, method='euler'):
+    '''
+    Function to integrate the ODEs using the specified method
+    If the method is not 'euler' or 'rk4', it will raise a ValueError
+
+    Parameters
+    ----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    acceleration: function to calculate the acceleration at a given position
+    dt: time step for the simulation
+    method: method to be used for numerical integration either 'euler' or 'rk4'
+    '''
+
+    if method == 'euler':
+        euler_method(r, v, acceleration, dt)
+    elif method == 'rk4':
+        rk4_method(r, v, acceleration, dt)
+    else:
+        raise ValueError(f'You cab either use "euler" or "rk4" method for numerical integration. Your input was: {method}')
+    
+# Call the numerical integration function
+numerical_integration(r, v, acceleration, dt, method='rk4')
 
 # Find the point at which the Earth is at its Apogee
 sizes = np.array([np.linalg.norm(position) for position in r])
