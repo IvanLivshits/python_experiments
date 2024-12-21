@@ -44,3 +44,9 @@ v = np.empty(shape=(len(t), 2))
 
 # Set the Initial conditions for postition and velocity
 r[0], v[0] = r_0, v_0
+
+# Define the functions that gets us the acceleration vector when passed in the position vector
+def acceleration(r):
+    return -G * M_sun * r / np.linalg.norm(r) ** 3
+
+print(acceleration(r[0]))
