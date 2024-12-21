@@ -73,3 +73,14 @@ def euler_method(r, v, acceleration, dt):
     for i in range(1, len(t)):
         r[i] = r[i - 1] + v[i - 1] * dt
         v[i] = v[i - 1] + acceleration(r[i - 1]) * dt
+
+# Apply the Euler Integration on the given initial conditions
+euler_method(r, v, acceleration, dt)
+
+# Find the point at which the Earth is at its Apogee
+sizes = np.array([np.linalg.norm(position) for position in r])
+pos_at_apogee = np.max(sizes)
+arg_max_size = np.argmax(sizes)
+vel_at_apogee = np.linalg.norm(v[arg_max_size])
+
+print(f"Apogee Position: {pos_at_apogee/1e9} million km, Apogee Velocity: {vel_at_apogee/1e3} km/s")
