@@ -36,7 +36,6 @@ t_max = 365 * 24 * 3600 # 1 year in seconds
 
 # Time array to be used in numerical solution 
 t = np.arange(0, t_max, dt)
-print(t)
 
 # Initialising arrays to store the positions and velocities at all the time steps
 r = np.empty(shape=(len(t), 2))
@@ -49,4 +48,28 @@ r[0], v[0] = r_0, v_0
 def acceleration(r):
     return -G * M_sun * r / np.linalg.norm(r) ** 3
 
-print(acceleration(r[0]))
+# Implementing the Euler method
+def euler_method(r, v, acceleration, dt):
+    '''
+    Equatons for Euler Method:
+    ODE for Position of the Earth: 
+    --> dr/dt = v
+    --> r_new = r_old + v_old * dt
+
+    ODE for Velocity of the Earth:
+    --> dv/dt = a
+    --> v_new = v_old + acceleration(r_old) * dt
+
+    Parameters
+    ----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    acceleration: function to calculate the acceleration at a given position
+    dt: time step for the simulation
+
+    This function will update the empty arrays r and v with the new position and velocity at each time step 
+    '''
+
+    for i in range(1, len(t)):
+        r[i] = r[i - 1] + v[i - 1] * dt
+        v[i] = v[i - 1] + acceleration(r[i - 1]) * dt
