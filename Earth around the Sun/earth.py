@@ -25,6 +25,9 @@ https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Method of Integration
+method_integration = 'rk4' # 'euler' or 'rk4'
+
 # Constants
 G = 6.67430e-11 # m^3 kg^-1 s^-2
 M_sun = 1.989e30 # kg
@@ -160,7 +163,7 @@ def numerical_integration(r, v, acceleration, dt, method='euler'):
         raise ValueError(f'You cab either use "euler" or "rk4" method for numerical integration. Your input was: {method}')
     
 # Call the numerical integration function
-numerical_integration(r, v, acceleration, dt, method='rk4')
+numerical_integration(r, v, acceleration, dt, method_integration)
 
 # Find the point at which the Earth is at its Apogee
 sizes = np.array([np.linalg.norm(position) for position in r])
@@ -169,3 +172,25 @@ arg_max_size = np.argmax(sizes)
 vel_at_apogee = np.linalg.norm(v[arg_max_size])
 
 print(f"Apogee Position: {pos_at_apogee/1e9} million km, Apogee Velocity: {vel_at_apogee/1e3} km/s")
+
+# Plotting the Simulation Data on 3D axis
+plt.style.use('dark_background')
+plt.figure(figsize=(10, 10))
+plt.subplot(projection='3d')
+suptitle_str = 'RK4' if method_integration == 'rk4' else 'Euler'
+plt.suptitle(f'{suptitle_str} Method', color='r', fontsize=15, weight='bold')
+plt.title(
+    f"At Apogee the Earth is {round(pos_at_apogee/1e9, 1)} million km away from the Sun\nMoving at the speed of {round(vel_at_apogee/1e3, 1)} km/s", 
+    fontsize=15, 
+    color='orange'
+)
+plt.plot(r[:, 0], r[:, 1], color='tab:pink', lw=2, label='Orbit')
+plt.scatter(0, 0, color='yellow', s=1000, label='Sun')
+plt.scatter(r[0, 0], r[0, 1], color='tab:blue', s=200, label='Earth at its Perihelion')
+plt.scatter(r[arg_max_size, 0], r[arg_max_size, 1], color='tab:blue', s=200, label='Earth at its Apogee')
+legend = plt.legend(loc='lower right', frameon=False)
+legend.legend_handles[1]._sizes = [150]
+legend.legend_handles[2]._sizes = [80]
+legend.legend_handles[3]._sizes = [80]
+plt.axis('off')
+plt.show()
